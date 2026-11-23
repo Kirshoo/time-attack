@@ -20,6 +20,23 @@ npx esbuild src/main.js --bundle --outfile=build/main.js
 cp src/manifest.json build/manifest.json
 ```
 
+### Tests
+
+Run the following commands:
+```bash
+# Install dependencies
+npm install
+
+# Bundle all of the src javascript into single .js file
+# Should also create build/ directory
+# if not, run this command:
+# mkdir build
+npx esbuild src/test.js --bundle --outfile=build/test.js
+
+# Run the test with node
+node build/test.js
+```
+
 ## Technical Details
 
 ### Checkpoints
