@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Time Attack",
+  "version": "1.0.0",
+  "description": "Provides tools and features to do time attacks in free roam.",
+  "content_scripts": [
+    {
+      "matches": [ "*://nfsu2.xyz/*" ],
+      "js": [ "script.js" ],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -3,6 +3,23 @@
 An nfsu2.xyz extention that introduces an ability to create custom time attack tracks with start position, checkpoints
 and finish.
 
+## Building
+
+Run the following commands:
+```bash
+# Install dependencies
+npm install
+
+# Bundle all of the src javascript into single .js file
+# Should also create build/ directory
+# if not, run this command:
+# mkdir build
+npx esbuild src/main.js --bundle --outfile=build/main.js
+
+# Copy over the manifest.json
+cp src/manifest.json build/manifest.json
+```
+
 ## Technical Details
 
 ### Checkpoints
