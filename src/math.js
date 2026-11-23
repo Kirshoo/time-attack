@@ -1,18 +1,14 @@
 export class Vector extends Array {
-	static get [Symbol.species]() {
-        return Array;
-    }
-
 	neg() {
-		return this.map((e) => -e);
+		return new Vector(...this.map((e) => -e));
 	}
 
 	add(other) {
-		return this.map((e, i) => e + other[i]);
+		return new Vector(...this.map((e, i) => e + other[i]));
 	}
 
 	sub(other) {
-		return this.map((e, i) => e - other[i]);
+		return new Vector(...this.map((e, i) => e - other[i]));
 	}
 
 	dot(other) {
@@ -34,6 +30,6 @@ export class Vector extends Array {
 	}
 
 	scale(scalar) {
-		return this.map(e => e * scalar);
+		return new Vector(...this.map(e => e * scalar));
 	}
 }
