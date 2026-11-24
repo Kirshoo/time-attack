@@ -38,7 +38,7 @@ function onCheckpoint(eventDetails) {
 
     console.info({
         position: eventDetails.checkpoint.center,
-        intersected_at: eventDetails.checkpoint.intersect(from, to),
+        intersected_at: eventDetails.intersection,
         collected_on: eventDetails.data.frame,
         collected_at: eventDetails.data.time,
         total_time: eventDetails.data.time - start
@@ -56,7 +56,7 @@ function updateRoute(data) {
     const to = getPosition(current_data);
 
     const collected_checkpoints = route.update(from, to);
-    collected_checkpoints.forEach(c => onCheckpoint({checkpoint: c, route, data));
+    collected_checkpoints.forEach(c => onCheckpoint({checkpoint: c, route, data, intersection: c.intersect(from, to)}));
 }
 
 window.addEventListener("message", (e) => {
@@ -65,6 +65,21 @@ window.addEventListener("message", (e) => {
 
     if (m.nfsu2 === 'feed-ready') {
         console.info("Feed updated");
+        waitForElement(`#${m.canvas}`, (canvas) => {
+            if (overlay_renderer || overlay_initializing)
+                return;
+
+            overlay_initializing = true;
+
+            createUiOverlay(canvas)
+                .then(renderer => {
+                    overlay_renderer = renderer;
+                    console.info("Gate Renderer Ready!");
+                })
+                .finally(() => {
+                    overlay_initializing = false;
+                });
+        });
     }
 
     if (m.nfsu2 === "car") {
