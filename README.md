@@ -14,7 +14,7 @@ npm install
 # Should also create build/ directory
 # if not, run this command:
 # mkdir build
-npx esbuild src/main.js --bundle --outfile=build/main.js
+npx esbuild src/main.js --bundle --outfile=build/script.js
 
 # Copy over the manifest.json
 cp src/manifest.json build/manifest.json
