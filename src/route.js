@@ -13,6 +13,10 @@ export class RouteManager {
 		throw new Error("Not implemented");
 	}
 
+	get started() {
+		throw new Error("Not implemented");
+	}
+
 	reset() {
 		throw new Error("Not implemented");
 	}
@@ -45,6 +49,10 @@ export class SequentialRoute extends RouteManager {
 
 	get completed() {
 		return this.currentIndex >= this.checkpoints.length;
+	}
+
+	get started() {
+		return this.currentIndex > 0;
 	}
 
 	reset() {
@@ -81,6 +89,10 @@ export class FreeOrderRoute extends RouteManager {
 
 	get completed() {
 		return this.collected.size === this.checkpoints.length;
+	}
+
+	get started() {
+		return this.collected.size > 0;
 	}
 
 	reset() {
