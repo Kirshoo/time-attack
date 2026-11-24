@@ -1,5 +1,7 @@
 import { getPosition, getForward } from "./data_adapter.js"
 import { RouteBuilder } from "./route_builder.js"
+import { Checkpoint } from "./checkpoint.js"
+import { Vector } from "./math.js"
 import { SequentialRoute } from "./route.js"
 
 function subscribe() {
@@ -62,6 +64,19 @@ window.addEventListener("message", (e) => {
         updateData(m);
         updateRoute(m);
     }
+
+    if (m.timeAttack === "export") {
+        if (route === null) return;
+        console.info(route.checkpoints);
+    }
+
+    if (m.timeAttack === "import" && m.checkpoints) {
+        console.info("Loaded route with", m.checkpoints.length, "checkpoints!");
+
+        const adapted = m.checkpoints.map(c => new Checkpoint(new Vector(...c.center), new Vector(...c.forward), c.width));
+
+        route = new SequentialRoute(adapted);
+    }
 });
 
 window.addEventListener("keydown", (e) => {
@@ -79,6 +94,10 @@ window.addEventListener("keydown", (e) => {
     if (e.code === "Numpad9" && route !== null) {
         console.info("Route completion reset! Back at the start!");
         route.reset();
+    }
+
+    if (e.code === "Numpad7" && route !== null) {
+        window.postMessage({ timeAttack: "export" }, location.origin);
     }
 });
 
