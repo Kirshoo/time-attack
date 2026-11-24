@@ -40,6 +40,9 @@ function onCheckpoint(eventDetails) {
         start = eventDetails.data.time;
     }
 
+    if (overlay_renderer)
+        overlay_renderer.drawGates = !eventDetails.route.completed;
+
     console.info({
         position: eventDetails.checkpoint.center,
         intersected_at: eventDetails.intersection,
@@ -73,6 +76,7 @@ function update_route_active_checkpoint(route) {
     if (checkpoints.length == 0) return;
 
     overlay_renderer.updateCheckpoint(checkpoints[0]);
+    overlay_renderer.drawGates = !route.complete;
 }
 
 window.addEventListener("message", (e) => {

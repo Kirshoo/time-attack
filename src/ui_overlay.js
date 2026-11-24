@@ -116,13 +116,15 @@ export class GateOverlayRender {
 			}],
 		});
 
-		renderPass.setPipeline(this.pipeline);
-		renderPass.setBindGroup(0, this.bindGroup);
+		if (this.drawGates) {
+			renderPass.setPipeline(this.pipeline);
+			renderPass.setBindGroup(0, this.bindGroup);
 
-		renderPass.setVertexBuffer(0, this.vertexBuffer);
-		renderPass.setIndexBuffer(this.indexBuffer, "uint32");
+			renderPass.setVertexBuffer(0, this.vertexBuffer);
+			renderPass.setIndexBuffer(this.indexBuffer, "uint32");
 
-		renderPass.drawIndexed(6);
+			renderPass.drawIndexed(6);
+		}
 
 		renderPass.end();
 
