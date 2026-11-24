@@ -68,6 +68,7 @@ function updateRoute(data) {
 
 let overlay_renderer = null;
 let overlay_initializing = false;
+let game_canvas_id = null;
 
 function update_route_active_checkpoint(route) {
     if (!route || !overlay_renderer) return;
@@ -85,6 +86,7 @@ window.addEventListener("message", (e) => {
 
     if (m.nfsu2 === 'feed-ready') {
         console.info("Feed updated");
+        game_canvas_id = m.canvas;
         waitForElement(`#${m.canvas}`, (canvas) => {
             if (overlay_renderer || overlay_initializing)
                 return;
@@ -111,6 +113,13 @@ window.addEventListener("message", (e) => {
     if (m.nfsu2 === "view" && overlay_renderer) {
         overlay_renderer.updateMatrices(m.view, m.proj);
         overlay_renderer.render();
+
+        if (!overlay_renderer.canvas.isConnected)
+            overlay_renderer.onCanvasRemoved(game_canvas_id);
+
+        const ref = document.getElementById(game_canvas_id);
+        if (ref)
+            overlay_renderer.resize(ref);
     }
 
     if (m.timeAttack === "export") {

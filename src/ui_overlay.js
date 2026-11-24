@@ -99,6 +99,8 @@ export class GateOverlayRender {
 	}
 
 	render() {
+		if (!this.canvas.isConnected) return;
+
 		const commandEncoder = this.device.createCommandEncoder();
 		const textureView = this.context.getCurrentTexture().createView();
 
@@ -129,6 +131,19 @@ export class GateOverlayRender {
 		renderPass.end();
 
 		this.device.queue.submit([commandEncoder.finish()]);
+	}
+
+	resize(reference_canvas) {
+		this.canvas.width = reference_canvas.width;
+		this.canvas.height = reference_canvas.height;
+	}
+
+	onCanvasRemoved(reference_id) {
+		const reference_canvas = document.getElementById(reference_id);
+		if (!reference_canvas) return;
+
+		reference_canvas.parentElement.appendChild(this.canvas);
+		console.info("Overlay reattached");
 	}
 
 	create_pipeline(device, shader, format, bindLayout) {
