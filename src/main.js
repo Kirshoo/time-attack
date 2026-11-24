@@ -22,10 +22,32 @@ function updateData(data) {
     current_data = data;
 }
 
+let start = null;
+// eventDetails is an object containing:
+// * checkpoint - Checkpoint that was collected
+// * route - Route this checkpoint belongs to
+// * data - Car information (see nfsu2.xyz/feeds.txt)
+function onCheckpoint(eventDetails) {
+    // Assumes that its only SequentialRoute type
+    let first = eventDetails.route.currentIndex === 1; // 1 instead of 0, because called after the counter is incremented
+
+    if (first) {
+        first = false;
+        start = eventDetails.data.time;
+    }
+
+    console.info({
+        position: eventDetails.checkpoint.center,
+        intersected_at: eventDetails.checkpoint.intersect(from, to),
+        collected_on: eventDetails.data.frame,
+        collected_at: eventDetails.data.time,
+        total_time: eventDetails.data.time - start
+    });
+}
+
 let builder = new RouteBuilder();
 let route = null;
 
-let start = null;
 function updateRoute(data) {
     if (route === null)
         return;
@@ -33,23 +55,8 @@ function updateRoute(data) {
     const from = getPosition(previous_data);
     const to = getPosition(current_data);
 
-    let first = route.currentIndex === 0;
-
     const collected_checkpoints = route.update(from, to);
-    collected_checkpoints.forEach(c => {
-        if (first) {
-            first = false;
-            start = data.time;
-        }
-
-        console.info({
-            position: c.center,
-            intersected_at: c.intersect(from, to),
-            collected_on: data.frame,
-            collected_at: data.time,
-            total_time: data.time - start
-        });
-    });
+    collected_checkpoints.forEach(c => onCheckpoint({checkpoint: c, route, data));
 }
 
 window.addEventListener("message", (e) => {
