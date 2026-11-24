@@ -16,13 +16,14 @@ export class Checkpoint {
 
 		// Not crossing in forward direction
 		if (distance_previous >= 0 || distance_current < 0) {
-			console.log("Crossing in wrong direction or not crossing at all.")
+			// console.log("Crossing in wrong direction or not crossing at all.")
+			// TODO: better way to propagate the error
 			return null;
 		}
 
 		const denominator = distance_previous - distance_current;
 		if (Math.abs(denominator) < 1e-8) {
-			console.log("Denominator is almost 0!")
+			// console.log("Denominator is almost 0!")
 			return null;
 		}
 
@@ -39,7 +40,7 @@ export class Checkpoint {
 	isCrossing(from, to) {
 		const intersection = this.intersect(from, to);
 
-		console.log(intersection);
+		// console.log(intersection);
 
 		return intersection != null && this.isWithin(intersection);
 	}
