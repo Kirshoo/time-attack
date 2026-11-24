@@ -26,8 +26,8 @@ export class SequentialRoute extends RouteManager {
 	}
 
 	update(from, to) {
-		const next = getNextCheckpoints();
-		if (next.length === 0) return;
+		const next = this.getNextCheckpoints();
+		if (next.length === 0) return [];
 
 		const checkpoint = next[0];
 
