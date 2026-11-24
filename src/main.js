@@ -23,6 +23,7 @@ function updateData(data) {
 let builder = new RouteBuilder();
 let route = null;
 
+let start = null;
 function updateRoute(data) {
     if (route === null)
         return;
@@ -30,12 +31,23 @@ function updateRoute(data) {
     const from = getPosition(previous_data);
     const to = getPosition(current_data);
 
+    let first = route.currentIndex === 0;
+
     const collected_checkpoints = route.update(from, to);
-    collected_checkpoints.forEach(c => console.info({
-        position: c.center,
-        intersected_at: c.intersect(from, to),
-        collected_at: data.frame
-    }));
+    collected_checkpoints.forEach(c => {
+        if (first) {
+            first = false;
+            start = data.time;
+        }
+
+        console.info({
+            position: c.center,
+            intersected_at: c.intersect(from, to),
+            collected_on: data.frame,
+            collected_at: data.time,
+            total_time: data.time - start
+        });
+    });
 }
 
 window.addEventListener("message", (e) => {
@@ -62,6 +74,11 @@ window.addEventListener("keydown", (e) => {
         route = new SequentialRoute(builder.export());
         console.info("Created route with", builder.checkpoints.length, "checkpoints!");
         builder = new RouteBuilder();
+    }
+
+    if (e.code === "Numpad9" && route !== null) {
+        console.info("Route completion reset! Back at the start!");
+        route.reset();
     }
 });
 
