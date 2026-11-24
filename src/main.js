@@ -3,13 +3,17 @@ import { RouteBuilder } from "./route_builder.js"
 import { Checkpoint } from "./checkpoint.js"
 import { Vector } from "./math.js"
 import { SequentialRoute } from "./route.js"
+import { createUiOverlay } from "./ui_overlay.js"
+import { waitForElement } from "./utils.js"
 
 function subscribe() {
 	window.postMessage({ nfsu2: 'car-on' }, location.origin);
+    window.postMessage({ nfsu2: 'view-on' }, location.origin);
 }
 
 function unsubscribe() {
 	window.postMessage({ nfsu2: 'car-off' }, location.origin);
+    window.postMessage({ nfsu2: 'view-off' }, location.origin);
 }
 
 let previous_data = null;
@@ -59,6 +63,18 @@ function updateRoute(data) {
     collected_checkpoints.forEach(c => onCheckpoint({checkpoint: c, route, data, intersection: c.intersect(from, to)}));
 }
 
+let overlay_renderer = null;
+let overlay_initializing = false;
+
+function update_route_active_checkpoint(route) {
+    if (!route || !overlay_renderer) return;
+
+    const checkpoints = route.getNextCheckpoints();
+    if (checkpoints.length == 0) return;
+
+    overlay_renderer.updateCheckpoint(checkpoints[0]);
+}
+
 window.addEventListener("message", (e) => {
 	if (e.source !== window || !e.data) return;
     const m = e.data;
@@ -85,6 +101,12 @@ window.addEventListener("message", (e) => {
     if (m.nfsu2 === "car") {
         updateData(m);
         updateRoute(m);
+        update_route_active_checkpoint(route);
+    }
+
+    if (m.nfsu2 === "view" && overlay_renderer) {
+        overlay_renderer.updateMatrices(m.view, m.proj);
+        overlay_renderer.render();
     }
 
     if (m.timeAttack === "export") {
