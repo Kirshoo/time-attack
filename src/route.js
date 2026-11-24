@@ -34,17 +34,22 @@ export class SequentialRoute extends RouteManager {
 	}
 
 	update(from, to) {
-		const next = this.getNextCheckpoints();
-		if (next.length === 0) return [];
+		const collected = [];
+		while(!this.completed) {
+			const next = this.getNextCheckpoints();
+			if (next.length === 0)
+				break;
 
-		const checkpoint = next[0];
+			const checkpoint = next[0];
 
-		if (checkpoint.isCrossing(from, to)) {
+			if (!checkpoint.isCrossing(from, to))
+				break;
+
 			this.currentIndex++;
-			return [checkpoint];
+			collected.push(checkpoint);
 		}
 
-		return [];
+		return collected;
 	}
 
 	get completed() {
