@@ -46,7 +46,7 @@ export class GateOverlayRender {
 		this.context.configure({
 			device: this.device,
 			format: prefered_format,
-			//alphaMode: "premultiplied",
+			alphaMode: "premultiplied",
 		});
 
 		this.shader = this.create_shader(this.device);
