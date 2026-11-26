@@ -1,13 +1,13 @@
 import { Vector } from "./math.js"
 import { Checkpoint } from "./checkpoint.js"
+import * as routes from "./route.js"
+import { RaceManager } from "./race.js"
 
 let a = new Vector(1, 0, 0);
 let b = new Vector(0, 1, 0);
 
 console.log(a.dot(b))
-
 console.log(a.cross(b));
-
 console.log(new Vector(3, -3, 1).cross(new Vector(4, 9, 2)));
 
 let check1 = new Checkpoint(new Vector(0, 0, 0), new Vector(1, 0, 0), 30);
@@ -32,3 +32,10 @@ console.log("Simple crossing:", check1.isCrossing(from1, to1));
 console.log("Simple crossing 5 to left:", check1.isCrossing(from1.add(check1.right.scale(-5)), to1.add(check1.right.scale(-5))));
 console.log("Simple crossing outside:", check1.isCrossing(from1.add(check1.right.scale(check1.width + 1)), to1.add(check1.right.scale(check1.width + 1))));
 console.log("Crossing, not reaching:", check1.isCrossing(from1.add(check1.forward.neg()), to1.add(check1.forward.neg())));
+
+let route1 = new routes.RouteManager();
+let seqRoute = new routes.SequentialRoute([]);
+let freeRoute = new routes.FreeOrderRoute([]);
+console.log("RouteManager: is valid race rotue?", RaceManager.isValidRoute(route1));
+console.log("SequentialRoute: is valid race rotue?", RaceManager.isValidRoute(seqRoute));
+console.log("FreeOrderRoute: is valid race rotue?", RaceManager.isValidRoute(freeRoute));
