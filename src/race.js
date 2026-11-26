@@ -130,5 +130,13 @@ export class RaceManager {
 		this.last_checkpoint = null;
 		this.last_sector = null;
 		this.route.reset();
+
+		this.events.dispatchEvent(
+			new CustomEvent("routeChanged", {
+				detail: {
+					route: this.route,
+				},
+			})
+		);
 	}
 }
