@@ -129,5 +129,6 @@ export class RaceManager {
 	reset() {
 		this.last_checkpoint = null;
 		this.last_sector = null;
+		this.route.reset();
 	}
 }

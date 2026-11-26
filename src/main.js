@@ -135,7 +135,6 @@ window.addEventListener("keydown", (e) => {
     if (e.code === "Numpad9" && racer.route !== null) {
         console.info("Route completion reset! Back at the start!");
         racer.reset();
-        racer.route.reset();
     }
 
     if (e.code === "Numpad7" && racer.route !== null) {
