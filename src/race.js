@@ -32,6 +32,7 @@ export class RaceManager {
 		}
 
 		this.route = newRoute;
+		reset();
 	}
 
 	isRacing() {
@@ -122,5 +123,10 @@ export class RaceManager {
 			this.tick(frame_data.dt);
 
 		this.updateRoute();
+	}
+
+	reset() {
+		this.last_checkpoint = null;
+		this.last_sector = null;
 	}
 }
