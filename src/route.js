@@ -9,6 +9,14 @@ export class RouteManager {
 		throw new Error("Not implemented");
 	}
 
+	get currentCheckpoint() {
+		throw new Error("Not implemented");
+	}
+
+	get totalCheckpoints() {
+		throw new Error("Not implemented");
+	}
+
 	get completed() {
 		throw new Error("Not implemented");
 	}
@@ -52,8 +60,16 @@ export class SequentialRoute extends RouteManager {
 		return collected;
 	}
 
+	get currentCheckpoint() {
+		return this.currentIndex;
+	}
+
+	get totalCheckpoints() {
+		return this.checkpoints.length;
+	}
+
 	get completed() {
-		return this.currentIndex >= this.checkpoints.length;
+		return this.currentCheckpoint >= this.totalCheckpoints;
 	}
 
 	get started() {
@@ -92,8 +108,16 @@ export class FreeOrderRoute extends RouteManager {
 		return collected;
 	}
 
+	get currentCheckpoint() {
+		return this.collected.size;
+	}
+
+	get totalCheckpoints() {
+		return this.checkpoints.length;
+	}
+
 	get completed() {
-		return this.collected.size === this.checkpoints.length;
+		return this.currentCheckpoint >= this.totalCheckpoints;
 	}
 
 	get started() {
