@@ -16,6 +16,7 @@ export class RaceManager {
 		this.previous_data = null;
 		this.current_data = null;
 
+		this.last_sector = null;
 		this.last_checkpoint = null;
 
 		this.events = new EventTarget();
@@ -32,7 +33,7 @@ export class RaceManager {
 		}
 
 		this.route = newRoute;
-		reset();
+		this.reset();
 	}
 
 	isRacing() {
@@ -89,8 +90,8 @@ export class RaceManager {
 
 		collected.forEach((c, i) => {
 			const sector = new Sector(
-				current_data.time,
-				current_data.time - (this.last_sector ? this.last_sector.timestamp : 0)
+				this.current_data.time,
+				this.current_data.time - (this.last_sector ? this.last_sector.timestamp : 0)
 			);
 			this.last_sector = sector;
 			this.last_checkpoint = c;
