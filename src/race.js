@@ -1,6 +1,13 @@
 import { RouteManager } from "./route.js"
 import { getPosition } from "./data_adapter.js"
 
+class Sector {
+	constructor(timestamp, time) {
+		this.timestamp = timestamp;
+		this.time = time;
+	}
+}
+
 export class RaceManager {
 	constructor() {
 		this.currentTime = 0;
@@ -80,6 +87,13 @@ export class RaceManager {
 		// Collected at least one checkpoint
 
 		collected.forEach((c, i) => {
+			const sector = new Sector(
+				current_data.time,
+				current_data.time - (this.last_sector ? this.last_sector.timestamp : 0)
+			);
+			this.last_sector = sector;
+			this.last_checkpoint = c;
+
 			this.#dispatchEvents(
 				c, 
 				first && i === 0, 
