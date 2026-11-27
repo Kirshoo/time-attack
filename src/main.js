@@ -72,11 +72,12 @@ window.addEventListener("message", (e) => {
     }
 
     if (m.timeAttack === "import" && m.checkpoints) {
-        console.info("Loaded route with", m.checkpoints.length, "checkpoints!");
-
         const adapted = m.checkpoints.map(c => new Checkpoint(new Vector(...c.center), new Vector(...c.forward), c.width));
 
-        setActiveRoute(new SequentialRoute(adapted));
+        if (!setActiveRoute(new SequentialRoute(adapted)))
+            return;
+
+        console.info("Loaded route with", m.checkpoints.length, "checkpoints!");
     }
 });
 
@@ -87,7 +88,8 @@ window.addEventListener("keydown", (e) => {
     }
 
     if (e.code === "Numpad8") {
-        setActiveRoute(new SequentialRoute(builder.export()));
+        if (!setActiveRoute(new SequentialRoute(builder.export())))
+            return;
         console.info("Created route with", builder.checkpoints.length, "checkpoints!");
         builder = new RouteBuilder();
     }
