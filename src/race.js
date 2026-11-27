@@ -57,9 +57,6 @@ export class RaceManager {
 	}
 
 	#dispatchEvents(checkpoint, isFirst, isLast) {
-		this.events.dispatchEvent(
-			this.#createEvent("checkpointCollected", checkpoint)
-		);
 		if (isFirst) {
 			this.currentTime = 0;
 
@@ -67,6 +64,9 @@ export class RaceManager {
 				this.#createEvent("raceStarted", checkpoint)
 			);
 		}
+		this.events.dispatchEvent(
+			this.#createEvent("checkpointCollected", checkpoint)
+		);
 		if (isLast) {
 			this.events.dispatchEvent(
 				this.#createEvent("raceFinished", checkpoint)
