@@ -5,7 +5,7 @@ import { Vector } from "./math.js"
 import { SequentialRoute } from "./route.js"
 import { RaceManager } from "./race.js"
 import { DisplayManager } from "./display.js"
-import { waitForElement } from "./utils.js"
+import { InputManager } from "./input_manager.js"
 
 function subscribe() {
 	window.postMessage({ nfsu2: 'car-on' }, location.origin);
@@ -38,6 +38,29 @@ const display = new DisplayManager();
 display.subscribeRaceManager(racer);
 
 let builder = new RouteBuilder();
+
+const inputs = new InputManager();
+const addCheckpointRemove = inputs.register("Numpad5", (e) => {
+    if (!builder) return;
+
+    console.info("Added checkpoint at", getPosition(racer.current_data));
+    builder.pushCheckpoint(getPosition(racer.current_data), getForward(racer.current_data), 30);
+});
+const routeSaveRemove = inputs.register("Numpad8", (e) => {
+    if (!builder) return;
+
+    if (!setActiveRoute(new SequentialRoute(builder.export())))
+        return;
+    console.info("Created route with", builder.checkpoints.length, "checkpoints!");
+    builder = new RouteBuilder();
+});
+const routeResetRemove = inputs.register("Numpad9", (e) => {
+    console.info("Route completion reset! Back at the start!");
+    racer.reset();
+});
+const routeExportRemove = inputs.register("Numpad7", (e) => {
+    window.postMessage({ timeAttack: "export" }, location.origin);
+});
 
 function setActiveRoute(newRoute) {
     if (!RaceManager.isValidRoute(newRoute)) {
@@ -81,28 +104,7 @@ window.addEventListener("message", (e) => {
     }
 });
 
-window.addEventListener("keydown", (e) => {
-    if (e.code === "Numpad5" && builder !== null) {
-        console.info("Added checkpoint at", getPosition(racer.current_data));
-        builder.pushCheckpoint(getPosition(racer.current_data), getForward(racer.current_data), 30);
-    }
-
-    if (e.code === "Numpad8") {
-        if (!setActiveRoute(new SequentialRoute(builder.export())))
-            return;
-        console.info("Created route with", builder.checkpoints.length, "checkpoints!");
-        builder = new RouteBuilder();
-    }
-
-    if (e.code === "Numpad9" && racer.route !== null) {
-        console.info("Route completion reset! Back at the start!");
-        racer.reset();
-    }
-
-    if (e.code === "Numpad7" && racer.route !== null) {
-        window.postMessage({ timeAttack: "export" }, location.origin);
-    }
-});
+window.addEventListener("keydown", (e) => inputs.trigger(e.code, e));
 
 window.addEventListener("beforeunload", (e) => unsubscribe());
 
